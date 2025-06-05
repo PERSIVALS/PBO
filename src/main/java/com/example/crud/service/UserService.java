@@ -1,4 +1,4 @@
-// UserService.java
+// UserService.java - FIXED
 package com.example.crud.service;
 
 import com.example.crud.model.User;
@@ -15,15 +15,44 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
+    public User register(User user) throws RuntimeException {
+        // Check if username or email already exists
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+        
+        // DON'T encode password here - it's done in controller
+        // user.setPassword(passwordEncoder.encode(user.getPassword()));
+        
+        // Set default role if not set
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER");
+        }
+        
+        return userRepository.save(user);
+    }
+    
     public PasswordEncoder getPasswordEncoder() {
         return passwordEncoder;
-    }
-    public User register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
     }
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+    
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+    
+    // Additional validation method
+    public boolean isUsernameExists(String username) {
+        return userRepository.existsByUsername(username);
+    }
+    
+    public boolean isEmailExists(String email) {
+        return userRepository.existsByEmail(email);
     }
 }
