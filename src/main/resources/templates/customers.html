@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-4">
+
+<h2>Daftar Pelanggan</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nama</th>
+            <th>Email</th>
+            <th>Disetujui</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="customer : ${customers}">
+            <td th:text="${customer.name}">Nama</td>
+            <td th:text="${customer.email}">Email</td>
+            <td>
+                <span th:text="${customer.approved ? 'Ya' : 'Belum'}"></span>
+            </td>
+            <td>
+                <a th:if="${!customer.approved}" th:href="@{/customers/approve/{id}(id=${customer.id})}" class="btn btn-success btn-sm">Setujui</a>
+                <a th:href="@{/customers/delete/{id}(id=${customer.id})}" class="btn btn-danger btn-sm">Hapus</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<a href="/" class="btn btn-secondary mt-3">Kembali ke Dashboard</a>
+
+</body>
+</html>

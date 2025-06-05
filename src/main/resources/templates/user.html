@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>MotoRent - User Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-blue-900 to-blue-800 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-xl shadow-2xl p-8 max-w-4xl mx-auto">
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h1 class="text-5xl font-bold text-gray-800">MOTORENT</h1>
+          <p class="text-gray-600 mt-2">Premium Motorcycle Rental Service</p>
+        </div>
+        <div class="flex gap-4">
+          <a href="/profile" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-full transition">
+            My Profile
+          </a>
+          <a href="/logout" class="bg-blue-800 hover:bg-blue-700 text-white px-6 py-3 rounded-full transition">
+            Logout
+          </a>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">My Rentals</h2>
+        <div class="h-1 w-32 bg-blue-800"></div>
+      </div>
+      
+      <div class="grid grid-cols-1 gap-8">
+        <!-- Current Rental -->
+        <div class="bg-gray-100 rounded-lg p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Current Rental</h3>
+          <div class="bg-white p-4 rounded-lg shadow">
+            <div class="flex justify-between items-center">
+              <div>
+                <h4 class="font-semibold">Honda CBR650R</h4>
+                <p class="text-gray-600">Rental Period: 24 Hours</p>
+                <p class="text-gray-600">Started: 2023-07-20 14:00</p>
+              </div>
+              <button class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                Return Bike
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Available Motorcycles -->
+        <div class="bg-gray-100 rounded-lg p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Available Motorcycles</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-lg shadow">
+              <h4 class="font-semibold">Kawasaki Ninja 650</h4>
+              <p class="text-gray-600">Rate: $50/day</p>
+              <button class="mt-4 w-full bg-blue-800 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                Rent Now
+              </button>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+              <h4 class="font-semibold">Yamaha MT-07</h4>
+              <p class="text-gray-600">Rate: $45/day</p>
+              <button class="mt-4 w-full bg-blue-800 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                Rent Now
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rental History -->
+        <div class="bg-gray-100 rounded-lg p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Rental History</h3>
+          <div class="space-y-4">
+            <div class="bg-white p-4 rounded-lg shadow">
+              <h4 class="font-semibold">Suzuki GSX-R750</h4>
+              <p class="text-gray-600">Period: 2023-07-15 to 2023-07-16</p>
+              <p class="text-green-600">Completed</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+              <h4 class="font-semibold">Ducati Monster</h4>
+              <p class="text-gray-600">Period: 2023-07-10 to 2023-07-11</p>
+              <p class="text-green-600">Completed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
