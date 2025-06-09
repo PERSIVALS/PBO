@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Motorcycles</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-5xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4">Tambah Motor</h2>
+
+        <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+    <span th:text="${errorMessage}"></span>
+</div>
+
+        <!-- FORM TAMBAH MOTOR -->
+        <form th:action="@{/motorcycles/save}" method="post" enctype="multipart/form-data" th:object="${motorcycle}" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <input type="hidden" th:field="*{id}" />
+            <div>
+                <label>Model</label>
+                <input type="text" th:field="*{model}" class="w-full border rounded p-2" required>
+            </div>
+            <div>
+                <label>Brand</label>
+                <input type="text" th:field="*{brand}" class="w-full border rounded p-2" required>
+            </div>
+            <div>
+                <label>Tahun</label>
+                <input type="number" th:field="*{year}" class="w-full border rounded p-2" required>
+            </div>
+            <div>
+                <label>Harga per Hari</label>
+                <input type="number" th:field="*{price}" step="0.01" class="w-full border rounded p-2" required>
+            </div>
+            <div>
+                <label>Status</label>
+                <select th:field="*{status}" class="w-full border rounded p-2">
+                    <option value="Available">Available</option>
+                    <option value="Unavailable">Unavailable</option>
+                </select>
+            </div>
+            <div>
+                <label>Gambar Motor</label>
+                <input type="file" name="imageFile" class="w-full border rounded p-2">
+            </div>
+            <div class="md:col-span-2 text-right">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Simpan</button>
+            </div>
+        </form>
+<!-- ...existing code... -->
+        <!-- TABEL MOTOR -->
+        <h2 class="text-xl font-semibold mb-4">Daftar Motor</h2>
+        <table class="w-full table-auto border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border p-2">ID</th>
+                    <th class="border p-2">Model</th>
+                    <th class="border p-2">Brand</th>
+                    <th class="border p-2">Tahun</th>
+                    <th class="border p-2">Harga</th>
+                    <th class="border p-2">Status</th>
+                    <th class="border p-2">Gambar</th>
+                    <th class="border p-2">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="m : ${motorcycles}" class="text-center">
+                    <td class="border p-2" th:text="${m.id}"></td>
+                    <td class="border p-2" th:text="${m.model}"></td>
+                    <td class="border p-2" th:text="${m.brand}"></td>
+                    <td class="border p-2" th:text="${m.year}"></td>
+                    <td class="border p-2" th:text="${m.price} + ' / day'"></td>
+                    <td class="border p-2" th:text="${m.status}"></td>
+                    <td class="border p-2">
+                        <img th:src="@{${m.imagePath}}" alt="motor image" class="w-20 h-16 object-cover mx-auto" th:if="${m.imagePath != null}">
+                        <!-- Ganti link delete dengan form -->
+                        <td class="border p-2 space-x-2">
+                            <a th:href="@{'/motorcycles/edit/' + ${m.id}}" class="bg-yellow-400 text-white px-2 py-1 rounded">Edit</a>
+                            <form th:action="@{'/motorcycles/delete/' + ${m.id}}" method="post" class="inline">
+                                <button type="submit" 
+                                        onclick="return confirm('Hapus motor ini?')" 
+                                        class="bg-red-500 text-white px-2 py-1 rounded">
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

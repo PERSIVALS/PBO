@@ -12,13 +12,18 @@ public class Motorcycle {
     private String model;
     private String brand;
     private int year;
+
+    @Column(name = "harga") // Add this annotation
     private double price;
 
-    // Constructor
-    public Motorcycle() {
-    }
+    private String status;     // "Available" / "Unavailable"
+    private String imagePath;
+      // Path gambar motor di folder static/images
 
-    // Getters and Setters
+    // Constructor default
+    public Motorcycle() {}
+
+    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -57,5 +62,21 @@ public class Motorcycle {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }
