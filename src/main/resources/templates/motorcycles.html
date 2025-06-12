@@ -2,91 +2,174 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Motorcycles</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>MotoRent - Motorcycle Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 p-6">
-    <div class="max-w-5xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-2xl font-bold mb-4">Tambah Motor</h2>
+<body class="bg-gradient-to-r from-blue-50 to-indigo-50 min-h-screen p-8">
+    <div class="max-w-6xl mx-auto space-y-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8 animate__animated animate__fadeIn">
+            <h1 class="text-3xl font-bold text-gray-800">
+                <i class="fas fa-motorcycle mr-2"></i>Motorcycle Management
+            </h1>
+            <button onclick="toggleForm()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                <i class="fas fa-plus mr-2"></i>Add New Motorcycle
+            </button>
+        </div>
 
-        <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-    <span th:text="${errorMessage}"></span>
-</div>
+        <!-- Add/Edit Form Card -->
+        <div id="formCard" class="bg-white rounded-xl shadow-lg p-6 mb-8 animate__animated animate__fadeInDown" style="display: none;">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                <i class="fas fa-plus-circle mr-2"></i>Add New Motorcycle
+            </h2>
 
-        <!-- FORM TAMBAH MOTOR -->
-        <form th:action="@{/motorcycles/save}" method="post" enctype="multipart/form-data" th:object="${motorcycle}" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <input type="hidden" th:field="*{id}" />
-            <div>
-                <label>Model</label>
-                <input type="text" th:field="*{model}" class="w-full border rounded p-2" required>
+            <div th:if="${errorMessage}" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span th:text="${errorMessage}"></span>
             </div>
-            <div>
-                <label>Brand</label>
-                <input type="text" th:field="*{brand}" class="w-full border rounded p-2" required>
+
+            <form th:action="@{/motorcycles/save}" method="post" enctype="multipart/form-data" th:object="${motorcycle}" 
+                  class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input type="hidden" th:field="*{id}" />
+                
+                <!-- Form fields with improved styling -->
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-tag mr-2"></i>Model
+                    </label>
+                    <input type="text" th:field="*{model}" 
+                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200" 
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-building mr-2"></i>Brand
+                    </label>
+                    <input type="text" th:field="*{brand}" 
+                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200" 
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-calendar mr-2"></i>Year
+                    </label>
+                    <input type="number" th:field="*{year}" 
+                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200" 
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-money-bill mr-2"></i>Daily Rate
+                    </label>
+                    <input type="number" th:field="*{price}" step="0.01" 
+                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200" 
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-check-circle mr-2"></i>Status
+                    </label>
+                    <select th:field="*{status}" 
+                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200">
+                        <option value="Available">✅ Available</option>
+                        <option value="Unavailable">❌ Unavailable</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-image mr-2"></i>Motorcycle Image
+                    </label>
+                    <input type="file" name="imageFile" 
+                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200">
+                </div>
+
+                <div class="md:col-span-2 flex justify-end space-x-4">
+                    <button type="button" onclick="toggleForm()" 
+                            class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-200">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </button>
+                    <button type="submit" 
+                            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                        <i class="fas fa-save mr-2"></i>Save
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Motorcycles Table -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden animate__animated animate__fadeInUp">
+            <div class="p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                    <i class="fas fa-list mr-2"></i>Motorcycle List
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Model</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Brand</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Year</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Daily Rate</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr th:each="m : ${motorcycles}" class="hover:bg-gray-50 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap" th:text="${m.id}"></td>
+                                <td class="px-6 py-4 whitespace-nowrap" th:text="${m.model}"></td>
+                                <td class="px-6 py-4 whitespace-nowrap" th:text="${m.brand}"></td>
+                                <td class="px-6 py-4 whitespace-nowrap" th:text="${m.year}"></td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="font-medium text-gray-900">Rp </span>
+                                    <span th:text="${#numbers.formatDecimal(m.price, 0, 'COMMA', 0, 'POINT')}"></span>
+                                    <span class="text-gray-500">/day</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span th:class="${m.status == 'Available' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} + ' px-2 py-1 rounded-full text-xs font-medium'">
+                                        <i th:class="${m.status == 'Available' ? 'fas fa-check-circle' : 'fas fa-times-circle'} + ' mr-1'"></i>
+                                        <span th:text="${m.status}"></span>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <img th:if="${m.imagePath != null}" th:src="@{${m.imagePath}}" 
+                                         alt="motorcycle image" class="h-16 w-20 object-cover rounded-lg shadow">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                    <a th:href="@{'/motorcycles/edit/' + ${m.id}}" 
+                                       class="text-yellow-600 hover:text-yellow-900 transition-colors duration-150">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form th:action="@{'/motorcycles/delete/' + ${m.id}}" method="post" class="inline">
+                                        <button type="submit" 
+                                                onclick="return confirm('Are you sure you want to delete this motorcycle?')"
+                                                class="text-red-600 hover:text-red-900 transition-colors duration-150">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div>
-                <label>Tahun</label>
-                <input type="number" th:field="*{year}" class="w-full border rounded p-2" required>
-            </div>
-            <div>
-                <label>Harga per Hari</label>
-                <input type="number" th:field="*{price}" step="0.01" class="w-full border rounded p-2" required>
-            </div>
-            <div>
-                <label>Status</label>
-                <select th:field="*{status}" class="w-full border rounded p-2">
-                    <option value="Available">Available</option>
-                    <option value="Unavailable">Unavailable</option>
-                </select>
-            </div>
-            <div>
-                <label>Gambar Motor</label>
-                <input type="file" name="imageFile" class="w-full border rounded p-2">
-            </div>
-            <div class="md:col-span-2 text-right">
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Simpan</button>
-            </div>
-        </form>
-<!-- ...existing code... -->
-        <!-- TABEL MOTOR -->
-        <h2 class="text-xl font-semibold mb-4">Daftar Motor</h2>
-        <table class="w-full table-auto border-collapse border border-gray-300">
-            <thead>
-                <tr class="bg-gray-200">
-                    <th class="border p-2">ID</th>
-                    <th class="border p-2">Model</th>
-                    <th class="border p-2">Brand</th>
-                    <th class="border p-2">Tahun</th>
-                    <th class="border p-2">Harga</th>
-                    <th class="border p-2">Status</th>
-                    <th class="border p-2">Gambar</th>
-                    <th class="border p-2">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="m : ${motorcycles}" class="text-center">
-                    <td class="border p-2" th:text="${m.id}"></td>
-                    <td class="border p-2" th:text="${m.model}"></td>
-                    <td class="border p-2" th:text="${m.brand}"></td>
-                    <td class="border p-2" th:text="${m.year}"></td>
-                    <td class="border p-2" th:text="${m.price} + ' / day'"></td>
-                    <td class="border p-2" th:text="${m.status}"></td>
-                    <td class="border p-2">
-                        <img th:src="@{${m.imagePath}}" alt="motor image" class="w-20 h-16 object-cover mx-auto" th:if="${m.imagePath != null}">
-                        <!-- Ganti link delete dengan form -->
-                        <td class="border p-2 space-x-2">
-                            <a th:href="@{'/motorcycles/edit/' + ${m.id}}" class="bg-yellow-400 text-white px-2 py-1 rounded">Edit</a>
-                            <form th:action="@{'/motorcycles/delete/' + ${m.id}}" method="post" class="inline">
-                                <button type="submit" 
-                                        onclick="return confirm('Hapus motor ini?')" 
-                                        class="bg-red-500 text-white px-2 py-1 rounded">
-                                    Hapus
-                                </button>
-                            </form>
-                        </td>
-                </tr>
-            </tbody>
-        </table>
+        </div>
     </div>
+
+    <script>
+    function toggleForm() {
+        const form = document.getElementById('formCard');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+    </script>
 </body>
 </html>
