@@ -118,7 +118,7 @@
         <p class="text-gray-600">Sign in to your account</p>
       </div>
       
-      <form th:action="@{/login}" method="post" class="space-y-6">
+      <form th:action="@{/auth/login}" method="post" class="space-y-6">
         
         <!-- Username field -->
         <div class="space-y-2">
@@ -186,7 +186,7 @@
         <div class="text-center">
           <p class="text-gray-600">
             Don't have an account? 
-            <a href="/register" class="text-black font-semibold hover:underline transition-all duration-300">
+            <a href="/auth/register" class="text-black font-semibold hover:underline transition-all duration-300">
               Register here
             </a>
           </p>

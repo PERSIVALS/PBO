@@ -10,18 +10,28 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/auth") // Tambahkan prefix agar rapi
 public class AuthController {
 
     @Autowired
     private UserService userService;
 
+    // Add root mappings for backward compatibility
     @GetMapping("/login")
+    public String redirectToAuthLogin() {
+        return "redirect:/auth/login";
+    }
+
+    @GetMapping("/register")
+    public String redirectToAuthRegister() {
+        return "redirect:/auth/register";
+    }
+
+    @GetMapping("/auth/login")
     public String loginForm() {
         return "login";
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public String login(@RequestParam String username, @RequestParam String password,
                         HttpServletRequest request, Model model) {
         try {
@@ -45,13 +55,13 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/register")
+    @GetMapping("/auth/register")
     public String registerForm(Model model) {
         model.addAttribute("user", new User());
         return "register";
     }
 
-    @PostMapping("/register")
+    @PostMapping("/auth/register")
     public String register(@ModelAttribute User user, Model model) {
         try {
             if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
@@ -110,21 +120,19 @@ public class AuthController {
         return "redirect:/auth/login";
     }
 
-    // FIXED: Ganti mapping agar tidak bentrok
     @GetMapping("/dashboard")
     public String adminRedirectInfo(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
             if ("ADMIN".equals(user.getRole())) {
-                // Redirect ke dashboard admin sesungguhnya
                 return "redirect:/admin";
             }
         }
         return "redirect:/auth/login";
     }
 
-    @GetMapping("/logout")
+    @GetMapping("/auth/logout")
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {

@@ -18,7 +18,7 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-     @Bean
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
@@ -28,18 +28,26 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/motorcycles", "/motorcycles/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/motorcycles/save", "/motorcycles/delete/**").permitAll()
                 .requestMatchers(
-                    "/register", "/login", "/tailwind/**",
+                    "/", "/login", "/register", "/auth/**", "/tailwind/**",
                     "/rentals", "/customers", "/dashboard"
                 ).permitAll()
                 .requestMatchers("/admin").permitAll()
                 .requestMatchers("/user").permitAll()
                 .anyRequest().authenticated()
             )
+            .formLogin(form -> form
+                .loginPage("/auth/login")
+                .loginProcessingUrl("/auth/login")
+                .defaultSuccessUrl("/user")
+                .permitAll()
+            )
             .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
+                .logoutUrl("/auth/logout")
+                .logoutSuccessUrl("/auth/login")
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID"));
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            );
         
         return http.build();
     }

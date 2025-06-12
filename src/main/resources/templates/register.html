@@ -136,7 +136,7 @@
         <p class="text-gray-600">Create your account to get started</p>
       </div>
       
-      <form th:action="@{/register}" method="post" class="space-y-6" th:object="${user}">
+      <form th:action="@{/auth/register}" method="post" class="space-y-6" th:object="${user}">
         
         <!-- Username field -->
         <div class="space-y-2 fade-in stagger-2">
@@ -244,7 +244,7 @@
         <div class="text-center fade-in stagger-5">
           <p class="text-gray-600">
             Already have an account? 
-            <a href="/login" class="text-black font-semibold hover:underline transition-all duration-300">
+            <a href="/auth/login" class="text-black font-semibold hover:underline transition-all duration-300">
               Sign in here
             </a>
           </p>
