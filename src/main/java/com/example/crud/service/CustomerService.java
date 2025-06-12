@@ -50,4 +50,8 @@ public class CustomerService {
             repository.save(customer);
         }
     }
+
+    public long countTotalCustomers() {
+        return repository.count();
+    }
 }

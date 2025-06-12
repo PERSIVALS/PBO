@@ -28,4 +28,8 @@ public class RentalService {
     public Rental findById(Long id) {
         return repository.findById(id).orElse(null);
     }
+    public long countActiveRentals() {
+    return repository.countByStatus("Active");
+}
+
 }

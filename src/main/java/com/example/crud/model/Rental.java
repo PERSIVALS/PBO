@@ -12,6 +12,8 @@ public class Rental {
 
     private LocalDate rentalDate;
 
+    private String status; // Tambahkan field ini
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
@@ -20,8 +22,7 @@ public class Rental {
     @JoinColumn(name = "motorcycle_id")
     private Motorcycle motorcycle;
 
-    public Rental() {
-    }
+    public Rental() {}
 
     // Getters and Setters
     public Long getId() {
@@ -38,6 +39,14 @@ public class Rental {
 
     public void setRentalDate(LocalDate rentalDate) {
         this.rentalDate = rentalDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Customer getCustomer() {
