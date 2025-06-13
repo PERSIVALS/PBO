@@ -1,159 +1,482 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Motorcycle Rental Admin</title>
+  <title>Urban Ride - Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+    
+    .slide-up {
+      animation: slideUp 0.8s ease-out;
+    }
+    
+    .slide-in-left {
+      animation: slideInLeft 0.8s ease-out;
+    }
+    
+    .slide-in-right {
+      animation: slideInRight 0.8s ease-out;
+    }
+    
+    .float {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideUp {
+      0% { opacity: 0; transform: translateY(50px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideInLeft {
+      0% { opacity: 0; transform: translateX(-50px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes slideInRight {
+      0% { opacity: 0; transform: translateX(50px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .bg-pattern {
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
+        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    
+    .glass-effect {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .sidebar-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar-hover:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateX(5px);
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    
+    .btn-hover {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-hover::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-hover:hover::before {
+      left: 100%;
+    }
+    
+    .bike-shadow {
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    }
+    
+    .glow-text {
+      text-shadow: 0 0 20px rgba(255,255,255,0.5);
+    }
+    
+    .chart-container {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      min-height: 400px;
+    }
+    
+    .chart-wrapper {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+  </style>
 </head>
-<body class="bg-gray-50">
-  <div class="min-h-screen flex">
+<body class="bg-gradient-to-br from-gray-900 via-black to-gray-800 bg-pattern min-h-screen">
+  
+  <!-- Background decorative elements -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-20 left-10 w-32 h-32 border border-white opacity-10 rounded-full animate-pulse"></div>
+    <div class="absolute bottom-20 right-10 w-24 h-24 border border-white opacity-5 rounded-full animate-ping"></div>
+    <div class="absolute top-1/2 right-5 w-16 h-16 border border-white opacity-10 transform rotate-45"></div>
+  </div>
 
+  <div class="min-h-screen flex">
+    
     <!-- Sidebar -->
-    <nav class="w-64 bg-indigo-800 p-6">
-      <div class="flex items-center mb-8">
-        <h1 class="text-white text-3xl font-bold">MotoAdmin</h1>
+    <nav class="slide-in-left w-64 bg-gradient-to-b from-black to-gray-800 p-6 shadow-2xl relative">
+      <div class="absolute inset-0 bg-black opacity-80"></div>
+      <div class="relative z-10">
+        <!-- Logo Section -->
+        <div class="flex items-center mb-8 text-center">
+          <div class="float bike-shadow mr-3">
+            <i class="fas fa-motorcycle text-3xl text-white"></i>
+          </div>
+          <div>
+            <h1 class="text-white text-2xl font-bold tracking-wide">URBAN RIDE</h1>
+            <p class="text-gray-300 text-xs uppercase tracking-widest">Admin Panel</p>
+          </div>
+        </div>
+        
+        <div class="w-full h-1 bg-white mb-8"></div>
+        
+        <!-- Navigation Menu -->
+        <ul class="space-y-3">
+          <li>
+            <a href="/admin" class="sidebar-hover flex items-center text-white py-3 px-4 rounded-lg font-medium">
+              <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
+              <span class="uppercase tracking-wide">Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="/rentals/admin" class="sidebar-hover flex items-center text-gray-300 hover:text-white py-3 px-4 rounded-lg font-medium">
+              <i class="fas fa-clock w-5 h-5 mr-3"></i>
+              <span class="uppercase tracking-wide">Rentals</span>
+            </a>
+          </li>
+          <li>
+            <a href="/motorcycles" class="sidebar-hover flex items-center text-gray-300 hover:text-white py-3 px-4 rounded-lg font-medium">
+              <i class="fas fa-motorcycle w-5 h-5 mr-3"></i>
+              <span class="uppercase tracking-wide">Motorcycles</span>
+            </a>
+          </li>
+          <li>
+            <a href="/customers" class="sidebar-hover flex items-center text-gray-300 hover:text-white py-3 px-4 rounded-lg font-medium">
+              <i class="fas fa-users w-5 h-5 mr-3"></i>
+              <span class="uppercase tracking-wide">Customers</span>
+            </a>
+          </li>
+          
+          <!-- Divider -->
+          <li class="py-4">
+            <div class="w-full h-px bg-gray-600"></div>
+          </li>
+          
+          <li>
+            <a href="/auth/logout" class="sidebar-hover flex items-center text-red-400 hover:text-red-300 hover:bg-red-900 hover:bg-opacity-30 py-3 px-4 rounded-lg font-medium">
+              <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i>
+              <span class="uppercase tracking-wide">Logout</span>
+            </a>
+          </li>
+        </ul>
       </div>
-      <ul class="space-y-4">
-        <li><a href="/admin/dashboard" class="flex items-center text-gray-300 hover:bg-indigo-700 rounded-lg py-3 px-4">
-          <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg> Dashboard</a></li>
-        <li><a href="/rentals" class="flex items-center text-gray-300 hover:bg-indigo-700 rounded-lg py-3 px-4">
-          <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg> Rentals</a></li>
-        <li><a href="/motorcycles" class="flex items-center text-gray-300 hover:bg-indigo-700 rounded-lg py-3 px-4">
-          <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2z"/>
-          </svg> Motorcycles</a></li>
-        <li><a href="/customers" class="flex items-center text-gray-300 hover:bg-indigo-700 rounded-lg py-3 px-4">
-          <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-          </svg> Customers</a></li>
-        <li><a href="/auth/logout" class="flex items-center text-red-400 hover:bg-red-900 rounded-lg py-3 px-4 mt-8">
-          <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-          </svg> Logout</a></li>
-      </ul>
     </nav>
 
     <!-- Main Content -->
-    <div class="flex-1 p-10">
-      <div class="mb-8">
-        <h2 class="text-3xl font-bold text-gray-800">Welcome Back, Admin!</h2>
-        <p class="text-gray-600">Here's what's happening today</p>
+    <div class="slide-in-right flex-1 p-10">
+      
+      <!-- Header Section -->
+      <div class="fade-in mb-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-4xl font-bold text-white glow-text mb-2">Welcome Back, Admin!</h2>
+            <p class="text-gray-300 text-lg">Here's what's happening with Urban Ride today</p>
+          </div>
+          <div class="hidden lg:block">
+            <div class="bike-shadow">
+              <i class="fas fa-chart-line text-6xl text-white opacity-20"></i>
+            </div>
+          </div>
+        </div>
+        <div class="w-32 h-1 bg-white mt-4"></div>
       </div>
 
       <!-- Dashboard Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6">
-          <div class="flex items-center justify-between">
-            <h3 class="text-white text-lg font-semibold">Active Rentals</h3>
-            <span class="bg-blue-400 rounded-full p-2">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-              </svg>
-            </span>
+      <div class="slide-up grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        
+        <!-- Active Rentals Card -->
+        <div class="card-hover bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl shadow-2xl p-8 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+          <div class="relative z-10">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-white text-xl font-bold uppercase tracking-wide">Active Rentals</h3>
+              <div class="bg-blue-500 rounded-full p-3 bike-shadow">
+                <i class="fas fa-motorcycle text-white text-2xl"></i>
+              </div>
+            </div>
+            <p class="text-5xl font-bold text-white glow-text mb-2" th:text="${activeRentals}">15</p>
+            <p class="text-blue-200 text-sm uppercase tracking-wide">Currently on road</p>
           </div>
-          <p class="text-4xl font-bold text-white mt-4" th:text="${activeRentals}">0</p>
         </div>
 
-        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-6">
-          <div class="flex items-center justify-between">
-            <h3 class="text-white text-lg font-semibold">Available Motorcycles</h3>
-            <span class="bg-green-400 rounded-full p-2">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-              </svg>
-            </span>
+        <!-- Available Motorcycles Card -->
+        <div class="card-hover bg-gradient-to-br from-green-600 to-green-800 rounded-2xl shadow-2xl p-8 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+          <div class="relative z-10">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-white text-xl font-bold uppercase tracking-wide">Available Units</h3>
+              <div class="bg-green-500 rounded-full p-3 bike-shadow">
+                <i class="fas fa-check-circle text-white text-2xl"></i>
+              </div>
+            </div>
+            <p class="text-5xl font-bold text-white glow-text mb-2" th:text="${availableMotorcycles}">28</p>
+            <p class="text-green-200 text-sm uppercase tracking-wide">Ready to rent</p>
           </div>
-          <p class="text-4xl font-bold text-white mt-4" th:text="${availableMotorcycles}">0</p>
         </div>
 
-        <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl shadow-lg p-6">
-          <div class="flex items-center justify-between">
-            <h3 class="text-white text-lg font-semibold">Total Customers</h3>
-            <span class="bg-purple-400 rounded-full p-2">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-              </svg>
-            </span>
+        <!-- Total Customers Card -->
+        <div class="card-hover bg-gradient-to-br from-purple-600 to-purple-800 rounded-2xl shadow-2xl p-8 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+          <div class="relative z-10">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-white text-xl font-bold uppercase tracking-wide">Total Customers</h3>
+              <div class="bg-purple-500 rounded-full p-3 bike-shadow">
+                <i class="fas fa-users text-white text-2xl"></i>
+              </div>
+            </div>
+            <p class="text-5xl font-bold text-white glow-text mb-2" th:text="${totalCustomers}">142</p>
+            <p class="text-purple-200 text-sm uppercase tracking-wide">Registered users</p>
           </div>
-          <p class="text-4xl font-bold text-white mt-4" th:text="${totalCustomers}">0</p>
         </div>
       </div>
 
       <!-- Chart Section -->
-      <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white p-6 rounded-xl shadow-lg">
-          <h3 class="text-xl font-semibold text-gray-700 mb-4">Rental Overview</h3>
-          <canvas id="rentalPieChart"></canvas>
+      <div class="slide-up grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Rental Overview Chart -->
+        <div class="chart-container rounded-2xl shadow-2xl p-8 border border-white border-opacity-20">
+          <div class="flex items-center mb-6">
+            <i class="fas fa-chart-pie text-2xl text-gray-800 mr-3"></i>
+            <h3 class="text-2xl font-bold text-gray-800 uppercase tracking-wide">Rental Overview</h3>
+          </div>
+          <div class="w-full h-1 bg-gray-800 mb-6"></div>
+          <div class="chart-wrapper">
+            <canvas id="rentalPieChart"></canvas>
+          </div>
         </div>
-        <div class="bg-white p-6 rounded-xl shadow-lg">
-          <h3 class="text-xl font-semibold text-gray-700 mb-4">Customer & Inventory</h3>
-          <canvas id="rentalBarChart"></canvas>
+
+        <!-- Analytics Chart -->
+        <div class="chart-container rounded-2xl shadow-2xl p-8 border border-white border-opacity-20">
+          <div class="flex items-center mb-6">
+            <i class="fas fa-chart-bar text-2xl text-gray-800 mr-3"></i>
+            <h3 class="text-2xl font-bold text-gray-800 uppercase tracking-wide">System Analytics</h3>
+          </div>
+          <div class="w-full h-1 bg-gray-800 mb-6"></div>
+          <div class="chart-wrapper">
+            <canvas id="rentalBarChart"></canvas>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+      
+      <!-- Quick Actions -->
+      <div class="slide-up mt-12">
+        <div class="chart-container rounded-2xl shadow-2xl p-8 border border-white border-opacity-20">
+          <div class="flex items-center mb-6">
+            <i class="fas fa-bolt text-2xl text-gray-800 mr-3"></i>
+            <h3 class="text-2xl font-bold text-gray-800 uppercase tracking-wide">Quick Actions</h3>
+          </div>
+          <div class="w-full h-1 bg-gray-800 mb-6"></div>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <a href="/motorcycles" class="btn-hover bg-black text-white p-4 rounded-lg text-center hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+              <i class="fas fa-plus-circle text-2xl mb-2"></i>
+              <p class="font-semibold uppercase tracking-wide">Add Motorcycle</p>
+            </a>
+            <a href="/rentals/admin" class="btn-hover bg-black text-white p-4 rounded-lg text-center hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+              <i class="fas fa-list text-2xl mb-2"></i>
+              <p class="font-semibold uppercase tracking-wide">View Rentals</p>
+            </a>
+            <a href="/customers" class="btn-hover bg-black text-white p-4 rounded-lg text-center hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+              <i class="fas fa-user-friends text-2xl mb-2"></i>
+              <p class="font-semibold uppercase tracking-wide">Manage Users</p>
+            </a>
+          </div>
+        </div>
+      </div>
 
-  <!-- Debug Information -->
-  <div class="bg-yellow-100 p-4 m-4">
-    <h3 class="font-bold">Debug Information:</h3>
-    <pre th:text="${'activeRentals: ' + activeRentals}">0</pre>
-    <pre th:text="${'availableMotorcycles: ' + availableMotorcycles}">0</pre>
-    <pre th:text="${'totalCustomers: ' + totalCustomers}">0</pre>
-  </div>
-
+    
   <!-- Chart.js Dynamic Configuration -->
   <script th:inline="javascript">
-    const activeRentals = /*[[${activeRentals}]]*/ 0;
-    const availableMotorcycles = /*[[${availableMotorcycles}]]*/ 0;
-    const totalCustomers = /*[[${totalCustomers}]]*/ 0;
+    // Data from Thymeleaf (fallback values for demo)
+    const activeRentals = /*[[${activeRentals}]]*/ 15;
+    const availableMotorcycles = /*[[${availableMotorcycles}]]*/ 28;
+    const totalCustomers = /*[[${totalCustomers}]]*/ 142;
 
-    // Pie Chart
-    const rentalPieCtx = document.getElementById('rentalPieChart').getContext('2d');
-    new Chart(rentalPieCtx, {
-      type: 'pie',
-      data: {
-        labels: ['Active Rentals', 'Available Motorcycles'],
-        datasets: [{
-          label: 'Units',
-          data: [activeRentals, availableMotorcycles],
-          backgroundColor: ['#3B82F6', '#10B981'],
-          borderColor: ['#2563EB', '#059669'],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'bottom' }
-        }
-      }
-    });
-
-    // Bar Chart
-    const rentalBarCtx = document.getElementById('rentalBarChart').getContext('2d');
-    new Chart(rentalBarCtx, {
-      type: 'bar',
-      data: {
-        labels: ['Active Rentals', 'Available Motorcycles', 'Total Customers'],
-        datasets: [{
-          label: 'Data Count',
-          data: [activeRentals, availableMotorcycles, totalCustomers],
-          backgroundColor: ['#3B82F6', '#10B981', '#8B5CF6']
-        }]
-      },
-      options: {
-        scales: {
-          y: { beginAtZero: true }
+    // Wait for DOM to load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Pie Chart Configuration
+      const rentalPieCtx = document.getElementById('rentalPieChart').getContext('2d');
+      new Chart(rentalPieCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Active Rentals', 'Available Motorcycles'],
+          datasets: [{
+            label: 'Units',
+            data: [activeRentals, availableMotorcycles],
+            backgroundColor: [
+              '#3B82F6',
+              '#10B981'
+            ],
+            borderColor: [
+              '#1E40AF',
+              '#065F46'
+            ],
+            borderWidth: 3,
+            hoverOffset: 10,
+            hoverBorderWidth: 4
+          }]
         },
-        responsive: true,
-        plugins: {
-          legend: { display: false }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { 
+              position: 'bottom',
+              labels: {
+                font: { 
+                  weight: 'bold',
+                  size: 12
+                },
+                padding: 20,
+                color: '#374151'
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              titleColor: '#fff',
+              bodyColor: '#fff',
+              borderColor: '#374151',
+              borderWidth: 1,
+              callbacks: {
+                label: function(context) {
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = ((context.parsed * 100) / total).toFixed(1);
+                  return context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+                }
+              }
+            }
+          },
+          cutout: '60%',
+          animation: {
+            animateRotate: true,
+            duration: 2000
+          }
         }
-      }
+      });
+
+      // Bar Chart Configuration
+      const rentalBarCtx = document.getElementById('rentalBarChart').getContext('2d');
+      new Chart(rentalBarCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Active Rentals', 'Available Motorcycles', 'Total Customers'],
+          datasets: [{
+            label: 'Count',
+            data: [activeRentals, availableMotorcycles, totalCustomers],
+            backgroundColor: [
+              '#3B82F6',
+              '#10B981',
+              '#8B5CF6'
+            ],
+            borderColor: [
+              '#1E40AF',
+              '#065F46',
+              '#5B21B6'
+            ],
+            borderWidth: 2,
+            borderRadius: 8,
+            borderSkipped: false,
+            hoverBackgroundColor: [
+              '#2563EB',
+              '#059669',
+              '#7C3AED'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { 
+              beginAtZero: true,
+              grid: { 
+                color: 'rgba(107, 114, 128, 0.3)',
+                borderColor: '#6B7280'
+              },
+              ticks: { 
+                font: { 
+                  weight: 'bold',
+                  size: 11
+                },
+                color: '#374151',
+                stepSize: Math.ceil(Math.max(activeRentals, availableMotorcycles, totalCustomers) / 5)
+              }
+            },
+            x: {
+              grid: { 
+                display: false 
+              },
+              ticks: { 
+                font: { 
+                  weight: 'bold',
+                  size: 11
+                },
+                color: '#374151',
+                maxRotation: 45
+              }
+            }
+          },
+          plugins: {
+            legend: { 
+              display: false 
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              titleColor: '#fff',
+              bodyColor: '#fff',
+              borderColor: '#374151',
+              borderWidth: 1,
+              callbacks: {
+                title: function(context) {
+                  return context[0].label;
+                },
+                label: function(context) {
+                  return 'Total: ' + context.parsed.y;
+                }
+              }
+            }
+          },
+          animation: {
+            duration: 2000,
+            easing: 'easeInOutBounce'
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index'
+          }
+        }
+      });
     });
   </script>
 </body>

@@ -2,6 +2,7 @@
 package com.example.crud.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -24,6 +25,9 @@ public class User {
 
     @Column(nullable = false)
     private String role = "USER"; // Default role
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Rental> rentals;
 
     // Default constructor
     public User() {}
@@ -56,6 +60,14 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public List<Rental> getRentals() {
+        return rentals;
+    }
+
+    public void setRentals(List<Rental> rentals) {
+        this.rentals = rentals;
+    }
 
     @Override
     public String toString() {

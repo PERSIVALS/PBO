@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Payment - Urban Ride</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; }
+      .bg-pattern { background: none !important; }
+      .glass-effect { background: white !important; backdrop-filter: none !important; }
+      .bg-gradient-to-br { background: white !important; }
+      #receiptModal { position: static !important; background: white !important; box-shadow: none !important; }
+      #receiptContent { box-shadow: none !important; border: none !important; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+    
+    .slide-up {
+      animation: slideUp 0.8s ease-out;
+    }
+    
+    .float {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .pulse-success {
+      animation: pulseSuccess 2s infinite;
+    }
+    
+    .bounce-in {
+      animation: bounceIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideUp {
+      0% { opacity: 0; transform: translateY(50px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes pulseSuccess {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .bg-pattern {
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
+        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    
+    .glass-effect {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-hover {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-hover::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-hover:hover::before {
+      left: 100%;
+    }
+    
+    .bike-shadow {
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    }
+    
+    .payment-card {
+      transition: all 0.3s ease;
+    }
+    
+    .payment-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 bg-pattern flex items-center justify-center p-4">
+  
+  <!-- Background decorative elements -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none no-print">
+    <div class="absolute top-20 left-10 w-32 h-32 border border-white opacity-10 rounded-full animate-pulse"></div>
+    <div class="absolute bottom-20 right-10 w-24 h-24 border border-white opacity-5 rounded-full animate-ping"></div>
+    <div class="absolute top-1/2 left-5 w-16 h-16 border border-white opacity-10 transform rotate-45"></div>
+    <div class="absolute bottom-10 left-1/2 w-20 h-20 border border-white opacity-5 rounded-full"></div>
+  </div>
+
+  <!-- Main payment container -->
+  <div class="fade-in glass-effect rounded-2xl shadow-2xl w-full max-w-md mx-auto overflow-hidden">
+    
+    <!-- Header section -->
+    <div class="slide-up bg-gradient-to-r from-black to-gray-800 p-8 text-center relative">
+      <div class="absolute inset-0 bg-black opacity-80"></div>
+      <div class="relative z-10">
+        <div class="float bike-shadow mb-4">
+          <i class="fas fa-credit-card text-6xl text-white"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-white mb-2 tracking-wide">
+          URBAN RIDE
+        </h1>
+        <div class="w-20 h-1 bg-white mx-auto mb-3"></div>
+        <p class="text-gray-300 text-sm uppercase tracking-widest font-medium">
+          Rental Payment
+        </p>
+        <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-white"></div>
+      </div>
+    </div>
+    
+    <!-- Payment content -->
+    <div class="p-8 bg-white">
+      
+      <!-- Payment form (if not paid) -->
+      <div th:if="${!paid}" class="payment-card">
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">Complete Payment</h2>
+          <p class="text-gray-600">Secure your motorcycle rental</p>
+        </div>
+        
+        <!-- Rental details -->
+        <div class="mb-8 p-6 bg-gray-50 rounded-lg border-l-4 border-black">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center">
+              <i class="fas fa-motorcycle text-2xl text-black mr-3"></i>
+              <div>
+                <div class="font-bold text-gray-800" th:text="${rental.motorcycle.brand + ' ' + rental.motorcycle.model}">Honda CBR650R</div>
+                <div class="text-sm text-gray-600">Premium Motorcycle</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="border-t pt-4">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600 font-semibold">Total Amount</span>
+              <span class="text-2xl font-bold text-black">
+                Rp <span th:text="${#numbers.formatDecimal(rental.totalPrice, 0, 'COMMA', 0, 'POINT')}">400,000</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Payment button -->
+        <form th:action="@{'/rentals/payment/' + ${rental.id}}" method="post">
+          <button type="submit" class="btn-hover w-full bg-black text-white py-4 rounded-lg hover:bg-gray-800 transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <i class="fas fa-lock mr-3"></i>
+            SECURE PAYMENT
+          </button>
+        </form>
+        
+        <!-- Security notice -->
+        <div class="mt-6 flex items-center justify-center text-sm text-gray-600">
+          <i class="fas fa-shield-alt text-green-500 mr-2"></i>
+          <span>256-bit SSL encryption secured</span>
+        </div>
+      </div>
+      
+      <!-- Success message (if paid) -->
+      <div th:if="${paid}" class="text-center">
+        <div class="bounce-in mb-6">
+          <div class="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4 pulse-success">
+            <i class="fas fa-check text-4xl text-green-500"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h2>
+          <p class="text-gray-600">Your rental has been confirmed</p>
+        </div>
+        
+        <!-- Success actions -->
+        <div class="space-y-3">
+          <button onclick="showReceipt()" class="btn-hover w-full bg-black text-white py-4 rounded-lg hover:bg-gray-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <i class="fas fa-receipt mr-3"></i>
+            VIEW RECEIPT
+          </button>
+          <a href="/user" class="btn-hover w-full inline-block text-center bg-gray-200 text-gray-800 py-4 rounded-lg hover:bg-gray-300 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <i class="fas fa-home mr-3"></i>
+            BACK TO DASHBOARD
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="bg-gray-100 px-8 py-4 text-center border-t">
+      <p class="text-xs text-gray-500">
+        © 2025 Urban Ride. All rights reserved.
+      </p>
+    </div>
+  </div>
+
+  <!-- Modal Receipt -->
+  <div id="receiptModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 no-print">
+    <div class="glass-effect rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden" id="receiptContent">
+      
+      <!-- Receipt Header -->
+      <div class="bg-gradient-to-r from-black to-gray-800 p-6 text-white text-center relative">
+        <div class="absolute inset-0 bg-black opacity-80"></div>
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-xl tracking-wide">URBAN RIDE</span>
+            <span class="text-xs bg-white bg-opacity-20 px-2 py-1 rounded" th:text="${#temporals.format(rental.startDate, 'dd MMM yyyy')}">20 Jul 2023</span>
+          </div>
+          <div class="text-sm font-semibold opacity-90">Payment Receipt</div>
+        </div>
+      </div>
+      
+      <!-- Total Amount -->
+      <div class="p-6 text-center bg-white">
+        <div class="text-gray-600 text-sm mb-1">Total Paid</div>
+        <div class="text-3xl font-bold text-green-600 mb-2">
+          Rp <span th:text="${#numbers.formatDecimal(rental.totalPrice, 0, 'COMMA', 0, 'POINT')}">400,000</span>
+        </div>
+        <div class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">
+          <i class="fas fa-check-circle mr-2"></i>
+          PAYMENT CONFIRMED
+        </div>
+      </div>
+      
+      <!-- Payment Details -->
+      <div class="px-6 bg-white">
+        <div class="border-t border-b border-gray-200 py-4 space-y-3">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Price per Day</span>
+            <span class="font-semibold">Rp <span th:text="${#numbers.formatDecimal(rental.motorcycle.price, 0, 'COMMA', 0, 'POINT')}">200,000</span></span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Rental Period</span>
+            <span class="font-semibold" th:text="${#temporals.format(rental.startDate, 'dd/MM')} + ' - ' + ${#temporals.format(rental.endDate, 'dd/MM')}">20/07 - 21/07</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Motorcycle & Renter Details -->
+      <div class="p-6 bg-white">
+        <div class="flex flex-col items-center mb-4">
+          <img th:src="@{${rental.motorcycle.imagePath}}" alt="Motorcycle" class="w-24 h-16 object-cover rounded-lg border-2 border-gray-200 mb-3 shadow-sm" th:if="${rental.motorcycle.imagePath != null}"/>
+          <div class="text-center">
+            <div class="font-bold text-gray-800" th:text="${rental.motorcycle.brand + ' ' + rental.motorcycle.model}">Honda CBR650R</div>
+            <div class="text-sm text-gray-600" th:text="${rental.motorcycle.year}">2023</div>
+          </div>
+        </div>
+        
+        <div class="space-y-2 text-xs text-gray-600">
+          <div class="flex justify-between">
+            <span class="font-semibold">Renter:</span>
+            <span th:text="${rental.user.username}">John Doe</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold">Receipt No:</span>
+            <span th:text="${rental.receiptNumber}">RENT-123456</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold">Status:</span>
+            <span class="text-green-600 font-semibold" th:text="${rental.status}">ACTIVE</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Receipt Footer -->
+      <div class="p-6 pt-4 bg-white text-center border-t">
+        <div class="mb-4">
+          <i class="fas fa-heart text-red-500 mb-2"></i>
+          <div class="text-gray-700 text-sm font-semibold">Thank you for choosing Urban Ride!</div>
+          <div class="text-gray-500 text-xs mt-1">For support: support@urbanride.com</div>
+        </div>
+        
+        <!-- Receipt Actions -->
+        <div class="flex space-x-2 no-print">
+          <button onclick="printReceipt()" class="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition font-semibold text-sm">
+            <i class="fas fa-print mr-2"></i>
+            PRINT
+          </button>
+          <button onclick="closeReceipt()" class="flex-1 bg-gray-200 text-gray-800 py-3 px-4 rounded-lg hover:bg-gray-300 transition font-semibold text-sm">
+            <i class="fas fa-times mr-2"></i>
+            CLOSE
+          </button>
+        </div>
+      </div>
+      
+      <!-- Receipt Footer Brand -->
+      <div class="bg-gray-100 px-6 py-3 text-center border-t">
+        <p class="text-xs text-gray-500">© 2025 Urban Ride. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Additional decorative elements -->
+  <div class="hidden lg:block absolute top-10 right-20 text-white opacity-20 no-print">
+    <i class="fas fa-credit-card text-8xl transform rotate-12"></i>  
+  </div>
+  <div class="hidden lg:block absolute bottom-10 left-20 text-white opacity-10 no-print">
+    <i class="fas fa-shield-alt text-6xl"></i>
+  </div>
+
+  <script>
+    function showReceipt() {
+      document.getElementById('receiptModal').classList.remove('hidden');
+    }
+    
+    function closeReceipt() {
+      document.getElementById('receiptModal').classList.add('hidden');
+    }
+    
+    function printReceipt() {
+      var printContents = document.getElementById('receiptContent').innerHTML;
+      var originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>

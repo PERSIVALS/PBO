@@ -1,24 +1,39 @@
 package com.example.crud.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
+@Table(name = "motorcycles")
 public class Motorcycle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String model;
+
+    @Column(nullable = false)
     private String brand;
+
+    @Column(nullable = false)
     private int year;
 
-    @Column(name = "harga") // Add this annotation
+    @Column(name = "harga", nullable = false)
     private double price;
 
-    private String status;     // "Available" / "Unavailable"
+    @Column(nullable = false)
+    private String status = "Available";     // "Available" / "Unavailable"
+
     private String imagePath;
       // Path gambar motor di folder static/images
+
+    @Column(length = 1000)
+    private String description;
+
+    @OneToMany(mappedBy = "motorcycle", cascade = CascadeType.ALL)
+    private List<Rental> rentals;
 
     // Constructor default
     public Motorcycle() {}
@@ -78,5 +93,26 @@ public class Motorcycle {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Rental> getRentals() {
+        return rentals;
+    }
+
+    public void setRentals(List<Rental> rentals) {
+        this.rentals = rentals;
+    }
+
+    @Override
+    public String toString() {
+        return brand + " " + model;
     }
 }

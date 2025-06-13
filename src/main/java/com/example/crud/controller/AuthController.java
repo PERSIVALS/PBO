@@ -129,31 +129,6 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/user")
-    public String userDashboard(HttpServletRequest request, Model model) {
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("user") != null) {
-            User user = (User) session.getAttribute("user");
-            if ("USER".equals(user.getRole())) {
-                model.addAttribute("username", user.getUsername());
-                return "user";
-            }
-        }
-        return "redirect:/auth/login";
-    }
-
-    @GetMapping("/dashboard")
-    public String adminRedirectInfo(HttpServletRequest request, Model model) {
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("user") != null) {
-            User user = (User) session.getAttribute("user");
-            if ("ADMIN".equals(user.getRole())) {
-                return "redirect:/admin";
-            }
-        }
-        return "redirect:/auth/login";
-    }
-
     @GetMapping("/auth/logout")
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);

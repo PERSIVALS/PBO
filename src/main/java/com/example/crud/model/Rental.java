@@ -1,28 +1,45 @@
 package com.example.crud.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "rentals")
 public class Rental {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate rentalDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    private String status; // Tambahkan field ini
-
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
-
-    @ManyToOne
-    @JoinColumn(name = "motorcycle_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "motorcycle_id", nullable = false)
     private Motorcycle motorcycle;
 
-    public Rental() {}
+    @Column(nullable = false)
+    private LocalDateTime startDate;
+
+    @Column(nullable = false)
+    private LocalDateTime endDate;
+
+    @Column(nullable = false)
+    private double totalPrice;
+
+    @Column(nullable = false)
+    private String status; // "ACTIVE", "COMPLETED", "CANCELLED"
+
+    @Column(nullable = false, unique = true)
+    private String receiptNumber;
+
+    public Rental() {
+        this.receiptNumber = generateReceiptNumber();
+    }
+
+    private String generateReceiptNumber() {
+        return "RENT-" + System.currentTimeMillis();
+    }
 
     // Getters and Setters
     public Long getId() {
@@ -33,12 +50,44 @@ public class Rental {
         this.id = id;
     }
 
-    public LocalDate getRentalDate() {
-        return rentalDate;
+    public User getUser() {
+        return user;
     }
 
-    public void setRentalDate(LocalDate rentalDate) {
-        this.rentalDate = rentalDate;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Motorcycle getMotorcycle() {
+        return motorcycle;
+    }
+
+    public void setMotorcycle(Motorcycle motorcycle) {
+        this.motorcycle = motorcycle;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public String getStatus() {
@@ -49,19 +98,25 @@ public class Rental {
         this.status = status;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public String getReceiptNumber() {
+        return receiptNumber;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setReceiptNumber(String receiptNumber) {
+        this.receiptNumber = receiptNumber;
     }
 
-    public Motorcycle getMotorcycle() {
-        return motorcycle;
-    }
-
-    public void setMotorcycle(Motorcycle motorcycle) {
-        this.motorcycle = motorcycle;
+    @Override
+    public String toString() {
+        return "Rental{" +
+                "id=" + id +
+                ", user=" + user.getUsername() +
+                ", motorcycle=" + motorcycle.toString() +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", totalPrice=" + totalPrice +
+                ", status='" + status + '\'' +
+                ", receiptNumber='" + receiptNumber + '\'' +
+                '}';
     }
 }

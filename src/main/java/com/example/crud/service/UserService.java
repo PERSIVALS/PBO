@@ -9,11 +9,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserService(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Autowired
     private UserRepository userRepository;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     
     public User register(User user) throws RuntimeException {
         // Check if username or email already exists
@@ -54,5 +58,9 @@ public class UserService {
     
     public boolean isEmailExists(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    public java.util.List<User> findAll() {
+        return userRepository.findAll();
     }
 }

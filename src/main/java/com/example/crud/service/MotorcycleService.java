@@ -41,4 +41,8 @@ public class MotorcycleService {
             return 0;
         }
     }
+
+    public List<Motorcycle> findByStatus(String status) {
+        return repository.findByStatus(status);
+    }
 }

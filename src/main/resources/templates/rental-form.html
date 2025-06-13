@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Urban Ride - Rental Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        .slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .bg-pattern {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .input-focus {
+            transition: all 0.3s ease;
+        }
+        
+        .input-focus:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: #ffffff;
+        }
+        
+        .btn-hover {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-hover:hover::before {
+            left: 100%;
+        }
+        
+        .bike-shadow {
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+        }
+        
+        .price-display {
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: pulse 2s infinite;
+        }
+        
+        .motorcycle-info {
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+    <script>
+        function updateTotal() {
+            const price = parseFloat(document.getElementById('price').value);
+            const days = parseInt(document.getElementById('duration').value) || 0;
+            const total = price * days;
+            document.getElementById('total').textContent = 'Rp ' + total.toLocaleString('id-ID');
+            
+            // Add animation effect when price changes
+            const priceElement = document.getElementById('total-container');
+            priceElement.classList.add('animate-pulse');
+            setTimeout(() => {
+                priceElement.classList.remove('animate-pulse');
+            }, 1000);
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 bg-pattern">
+    
+    <!-- Background decorative elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-20 left-10 w-32 h-32 border border-white opacity-10 rounded-full animate-pulse"></div>
+        <div class="absolute bottom-20 right-10 w-24 h-24 border border-white opacity-5 rounded-full animate-ping"></div>
+        <div class="absolute top-1/2 right-5 w-16 h-16 border border-white opacity-10 transform rotate-45"></div>
+        <div class="absolute bottom-10 left-1/2 w-20 h-20 border border-white opacity-5 rounded-full"></div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        
+        <!-- Header -->
+        <div class="fade-in flex items-center justify-center mb-8">
+            <div class="text-center">
+                <div class="float bike-shadow mb-4">
+                    <i class="fas fa-motorcycle text-6xl text-white"></i>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-2 tracking-wide">URBAN RIDE</h1>
+                <div class="w-20 h-1 bg-white mx-auto mb-3"></div>
+                <p class="text-gray-300 text-sm uppercase tracking-widest font-medium">Premium Motorcycle Rental</p>
+            </div>
+        </div>
+        
+        <!-- Back Button -->
+        <div class="fade-in mb-6">
+            <a href="/user" class="inline-flex items-center text-white hover:text-gray-300 transition-colors duration-300">
+                <i class="fas fa-arrow-left mr-3"></i>
+                <span class="font-semibold">Back to Dashboard</span>
+            </a>
+        </div>
+        
+        <!-- Main Form Container -->
+        <div class="slide-up max-w-2xl mx-auto">
+            <div class="glass-effect rounded-2xl shadow-2xl overflow-hidden">
+                
+                <!-- Form Header -->
+                <div class="bg-black bg-opacity-50 p-6 border-b border-gray-700">
+                    <h2 class="text-2xl font-bold text-white flex items-center">
+                        <div class="bg-white bg-opacity-20 p-3 rounded-full mr-4">
+                            <i class="fas fa-file-contract text-white text-xl"></i>
+                        </div>
+                        Rental Booking Form
+                    </h2>
+                    <p class="text-gray-300 mt-2">Complete your motorcycle rental details</p>
+                </div>
+                
+                <!-- Form Content -->
+                <div class="p-8">
+                    <form th:action="@{/rentals/create}" method="post" class="space-y-6">
+                        <input type="hidden" name="motorcycleId" th:value="${motorcycle.id}" />
+                        <input type="hidden" id="price" th:value="${motorcycle.price}" />
+                        
+                        <!-- Motorcycle Information -->
+                        <div class="motorcycle-info p-6 rounded-xl">
+                            <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                <i class="fas fa-motorcycle mr-3 text-blue-400"></i>
+                                Selected Motorcycle
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <div class="text-2xl font-bold text-white mb-2" th:text="${motorcycle.brand + ' ' + motorcycle.model}"></div>
+                                    <div class="flex items-center text-gray-300 mb-2">
+                                        <i class="fas fa-calendar mr-3 text-green-400"></i>
+                                        <span>Year: <span class="text-white font-semibold" th:text="${motorcycle.year}"></span></span>
+                                    </div>
+                                    <div class="flex items-center text-gray-300">
+                                        <i class="fas fa-money-bill mr-3 text-yellow-400"></i>
+                                        <span>Price per day: <span class="text-white font-semibold text-lg">Rp <span th:text="${#numbers.formatDecimal(motorcycle.price, 0, 'COMMA', 0, 'POINT')}"></span></span></span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-center md:justify-end">
+                                    <div class="w-32 h-32 bg-gray-700 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-motorcycle text-4xl text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Rental Details -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <!-- Start Date -->
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold text-sm uppercase tracking-wide">
+                                    <i class="fas fa-calendar-alt mr-2 text-green-400"></i>Start Date
+                                </label>
+                                <input 
+                                    type="date" 
+                                    name="startDate" 
+                                    required 
+                                    class="input-focus w-full px-4 py-4 bg-gray-800 border-2 border-gray-600 rounded-xl focus:outline-none focus:border-white text-white transition-all duration-300"
+                                />
+                            </div>
+                            
+                            <!-- Duration -->
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold text-sm uppercase tracking-wide">
+                                    <i class="fas fa-clock mr-2 text-blue-400"></i>Duration (Days)
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="duration" 
+                                    name="duration" 
+                                    min="1" 
+                                    value="1" 
+                                    required 
+                                    oninput="updateTotal()"
+                                    class="input-focus w-full px-4 py-4 bg-gray-800 border-2 border-gray-600 rounded-xl focus:outline-none focus:border-white text-white transition-all duration-300"
+                                />
+                            </div>
+                        </div>
+                        
+                        <!-- Total Price Display -->
+                        <div id="total-container" class="price-display p-6 rounded-xl text-center">
+                            <div class="flex items-center justify-center mb-4">
+                                <i class="fas fa-calculator text-3xl text-yellow-400 mr-4"></i>
+                                <div>
+                                    <p class="text-gray-300 text-sm uppercase tracking-wide font-semibold">Total Price</p>
+                                    <div class="text-4xl font-bold text-white mt-2">
+                                        <span id="total">Rp <span th:text="${#numbers.formatDecimal(motorcycle.price, 0, 'COMMA', 0, 'POINT')}"></span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-gray-400 text-sm">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Price includes insurance and basic maintenance
+                            </div>
+                        </div>
+                        
+                        <!-- Terms and Conditions -->
+                        <div class="bg-gray-800 bg-opacity-50 p-4 rounded-xl border border-gray-700">
+                            <div class="flex items-start">
+                                <input type="checkbox" id="terms" required class="mt-1 mr-3 rounded border-gray-600 text-white focus:ring-white">
+                                <label for="terms" class="text-gray-300 text-sm">
+                                    I agree to the <a href="#" class="text-white hover:underline font-semibold">Terms and Conditions</a> and 
+                                    <a href="#" class="text-white hover:underline font-semibold">Privacy Policy</a>. 
+                                    I understand that I am responsible for the motorcycle during the rental period.
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <button 
+                            type="submit" 
+                            class="btn-hover w-full bg-white text-black py-4 rounded-xl hover:bg-gray-100 transition-all duration-300 font-bold text-lg shadow-lg"
+                        >
+                            <i class="fas fa-credit-card mr-3"></i>
+                            PROCEED TO PAYMENT
+                        </button>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional decorative elements -->
+    <div class="hidden lg:block fixed top-10 right-20 text-white opacity-20 pointer-events-none">
+        <i class="fas fa-motorcycle text-8xl transform rotate-12 float"></i>
+    </div>
+    <div class="hidden lg:block fixed bottom-10 left-20 text-white opacity-10 pointer-events-none">
+        <i class="fas fa-road text-6xl"></i>
+    </div>
+    
+    <script>
+        // Initialize total calculation on page load
+        updateTotal();
+        
+        // Set minimum date to today
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[name="startDate"]').setAttribute('min', today);
+        });
+    </script>
+</body>
+</html>

@@ -91,5 +91,12 @@ public class MotorcycleController {
             return "redirect:/motorcycles?error=Delete failed";
         }
     }
+
+    @GetMapping("/{id}")
+    public String motorcycleDetail(@PathVariable Long id, Model model) {
+        Motorcycle motorcycle = motorcycleService.findById(id);
+        model.addAttribute("motorcycle", motorcycle);
+        return "motorcycle-detail";
+    }
 }
 
